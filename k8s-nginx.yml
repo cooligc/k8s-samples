@@ -19,6 +19,13 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        volumeMounts:
+          - name: nginx-logs-storage
+            mountPath: /var/log/nginx
+      volumes:
+        - name: nginx-logs-storage
+          persistentVolumeClaim:
+            claimName: local-pv
 ---
 
 apiVersion: v1
@@ -37,3 +44,15 @@ spec:
   selector:
     run: nginx
   type: NodePort
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10m
